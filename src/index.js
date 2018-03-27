@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import ButtonAppBar from './test.js';
+import ButtonAppBar from './ButtonAppBar';
 
 
 
