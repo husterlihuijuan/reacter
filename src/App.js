@@ -91,7 +91,8 @@ class App extends Component{
     this.setState({mouse:!mouse});
   }
   handleList(event,a){
-      window.open('../public/list1.html','_blank');
+      
+    //window.open('../public/list1.html','_blank');
     
    this.setState({
      list:a,
@@ -103,7 +104,7 @@ class App extends Component{
     const classes=this.props.classes;
    
     let centre=(
-      <h1>centent</h1>
+      <h1>content</h1>
     );
     if(this.state.list==1){
       centre=(
