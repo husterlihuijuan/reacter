@@ -1,98 +1,129 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { withStyles } from 'material-ui/styles';
-import Drawer from 'material-ui/Drawer';
+
+import React, { Component} from 'react';
 import AppBar from 'material-ui/AppBar';
+import { withStyles } from 'material-ui/styles';
 import Toolbar from 'material-ui/Toolbar';
-import List from 'material-ui/List';
-import Typography from 'material-ui/Typography';
-import Divider from 'material-ui/Divider';
-import AppDrawer from './AppDrawer';
-import Button from 'material-ui/Button';
 import IconButton from 'material-ui/IconButton';
 import MenuIcon from 'material-ui-icons/Menu';
-
-const drawerWidth = 240;
-
-const styles = theme => ({
+import Drawer from 'material-ui/Drawer';
+import Typography from 'material-ui/Typography';
+import classNames from 'classnames';
+import AppList from "./AppList"
+import Button from 'material-ui/Button';
+//样式
+const drawerWidth=240;
+const styles=theme=>({
   root: {
     flexGrow: 1,
-    zIndex: 1,
-    overflow: 'hidden',
+    height:"100%",
+    zIndex:1,
     position: 'relative',
     display: 'flex',
   },
-  flex:{
-      flex:1,
-
+  flex: {
+    flex: 1,
   },
   appBar: {
     zIndex: theme.zIndex.drawer + 1,
+    backgroundColor:"#009688",
   },
   drawerPaper: {
     position: 'relative',
     width: drawerWidth,
   },
+  drawerHeader: {   
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    padding: '0 8px',
+    ...theme.mixins.toolbar,
+  },
   content: {
     flexGrow: 1,
     backgroundColor: theme.palette.background.default,
     padding: theme.spacing.unit * 3,
-    minWidth: 0, // So the Typography noWrap works
+    transition: theme.transitions.create('margin', {
+    easing: theme.transitions.easing.sharp,
+    duration: theme.transitions.duration.leavingScreen,
+    marginLeft: 0,
+    }),
+  },
+  'content-left': {
+    marginLeft: -drawerWidth,
+  },
+  'contentShift-left': {
+    marginLeft: 0,
   },
   toolbar: theme.mixins.toolbar,
-  menuButton:{
-    marginLeft:-12,
-    marginRoght:20,
-  },
 });
 
-class App extends React.Component {
-    state={
-        open:false,
+class App extends  Component{
+  constructor(props){
+    super(props);
+    this.state={
+      open:false,
+      mouse:true,
+      anchorEl: null,
     }
-    handleDrawer=()=>{
-        this.setState({
-            open:!this.state.open,
-        })
+//点击事件函数绑定
+    this.handleOnclick=this.handleOnclick.bind(this);
+    this.handleEnter=this.handleEnter.bind(this);
+    this.handleMenu=this.handleMenu.bind(this);
+  }
+
+// 点击事件
+  handleOnclick(){
+      var open=this.state.open;
+      this.setState({open:!open});
+  }
+  handleEnter=event=>{
+    if(this.state.mouse===true){
+    var mouse=this.state.mouse;
+    //var login=this.state.login;
+    //login=login==='login'? 'loginout':'login';
+    this.setState({mouse:!mouse  ,anchorEl: event.currentTarget});
     }
-    render(){
-        const { classes } =this.props;
-        return(
-            <div className={classes.root}>
-      <AppBar position="absolute" className={classes.appBar}>
-        <Toolbar>
-            <IconButton className={classes.menuButton} color="inherit" aria-label="Menu" 
-            onClick={this.handleDrawer}>
-                <MenuIcon/>
+  }
+  handleMenu(){
+    var mouse=this.state.mouse;
+    this.setState({mouse:!mouse});
+  }
+
+  render(){
+    const classes=this.props.classes;
+    return (
+    <div className={classes.root} >                   
+       <AppBar  className={classes.appBar}  >
+          <Toolbar>
+            <IconButton 
+             onClick={this.handleOnclick} color="inherit">
+              <MenuIcon/>
             </IconButton>
-          <Typography variant="title" color="inherit" noWrap className={classes.flex}>
-            Title
-          </Typography>
-          <Button color="inhert">login</Button>
-        </Toolbar>
-      </AppBar>
-      <Drawer
-        variant="permanent"
-        classes={{
-          paper: classes.drawerPaper,
-        } } open={this.state.open}
-      >
-        <div className={classes.toolbar} />
-        <AppDrawer/>
-      </Drawer>
-      <main className={classes.content}>
-        <div className={classes.toolbar} />
-        <Typography noWrap>{'You think water moves fast? You should see ice.'}</Typography>
-      </main>
+            <Typography variant="title" color="inherit"  className={classes.flex}>Title</Typography>
+            {/* -----登录---- */}
+            <Button color="inherit">登 录</Button>
+          </Toolbar>
+       </AppBar>
+       {/* -------Drawer------ */}
+             <Drawer   variant="persistent"
+              open={this.state.open}
+              classes={{paper:classes.drawerPaper}}>
+               <IconButton  onClick={this.handleOnclick}>
+                 <MenuIcon/>
+               </IconButton>
+               {/* ----list----- */}
+               <AppList/>
+             </Drawer>
+           {/* -------main--------- */}
+             <main  className={classNames(classes.content, classes[`content-left`], 
+             {[classes[`contentShift-left`]]: this.state.open})}>
+             <div className={classes.drawerHeader}  />
+             <Typography noWrap>qwertyuioop</Typography>
+             </main>
     </div>
-        );
-
-    }
- 
-
-    
-   
-}
+    )
+  }
+} 
 
 
 export default withStyles(styles)(App);

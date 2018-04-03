@@ -1,67 +1,38 @@
-import React from 'react';
-import { withStyles } from 'material-ui/styles';
-import classNames from 'classnames';
-import Drawer from 'material-ui/Drawer';
+
+import React, { Component} from 'react';
 import AppBar from 'material-ui/AppBar';
+import { withStyles } from 'material-ui/styles';
 import Toolbar from 'material-ui/Toolbar';
-import { MenuItem } from 'material-ui/Menu';
-import Typography from 'material-ui/Typography';
-import Divider from 'material-ui/Divider';
 import IconButton from 'material-ui/IconButton';
 import MenuIcon from 'material-ui-icons/Menu';
-import ChevronLeftIcon from 'material-ui-icons/ChevronLeft';
+import Drawer from 'material-ui/Drawer';
+import Typography from 'material-ui/Typography';
+import classNames from 'classnames';
+import List,{ListItem,ListItemText} from "material-ui/List";
 import Button from 'material-ui/Button';
-import AppDrawer from './AppDrawer';
-import List from "material-ui/List";
-import ListSubheader from 'material-ui/List/ListSubheader';
-const drawerWidth = 240;
-
-const styles = theme => ({
+import AppList from './AppList'
+//样式
+const drawerWidth=240;
+const styles=theme=>({
   root: {
     flexGrow: 1,
-  },
-  flex:{
-    flex:1,
-  },
-  appFrame: {
-    zIndex: 1,
-    overflow: 'hidden',
+    height:"100%",
+    zIndex:1,
     position: 'relative',
     display: 'flex',
-    width: '100%',
+  },
+  flex: {
+    flex: 1,
   },
   appBar: {
-    position: 'absolute',
-    transition: theme.transitions.create(['margin', 'width'], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
-  },
-  appBarShift: {
-    width: `calc(100% - ${drawerWidth}px)`,
-    transition: theme.transitions.create(['margin', 'width'], {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-  },
-  'appBarShift-left': {
-    marginLeft: drawerWidth,
-  },
-  'appBarShift-right': {
-    marginRight: drawerWidth,
-  },
-  menuButton: {
-    marginLeft: 12,
-    marginRight: 20,
-  },
-  hide: {
-    display: 'none',
+    zIndex: theme.zIndex.drawer + 1,
+    backgroundColor:"#009688",
   },
   drawerPaper: {
     position: 'relative',
     width: drawerWidth,
   },
-  drawerHeader: {
+  drawerHeader: {   
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'flex-end',
@@ -73,102 +44,125 @@ const styles = theme => ({
     backgroundColor: theme.palette.background.default,
     padding: theme.spacing.unit * 3,
     transition: theme.transitions.create('margin', {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
+    easing: theme.transitions.easing.sharp,
+    duration: theme.transitions.duration.leavingScreen,
+    marginLeft: 0,
     }),
   },
   'content-left': {
     marginLeft: -drawerWidth,
   },
-  'content-right': {
-    marginRight: -drawerWidth,
-  },
-  contentShift: {
-    transition: theme.transitions.create('margin', {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-  },
   'contentShift-left': {
     marginLeft: 0,
   },
-  'contentShift-right': {
-    marginRight: 0,
-  },
+  toolbar: theme.mixins.toolbar,
 });
 
-class App extends React.Component {
-  state = {
-    open: false,
-    anchor: 'left',
-  };
-  handleToggle=()=>{
-    this.setState({
-      open:!this.state.open,
-    })
+class App extends Component{
+  constructor(props){
+    super(props);
+    this.state={
+      open:false,
+      mouse:true,
+      anchorEl: null,
+     list:0,
+    }
+//点击事件函数绑定
+    this.handleOnclick=this.handleOnclick.bind(this);
+    this.handleEnter=this.handleEnter.bind(this);
+    this.handleMenu=this.handleMenu.bind(this);
   }
-  render() {
-    const { classes, theme } = this.props;
-    const { anchor, open } = this.state;
-    const drawer = (
-      <Drawer variant="persistent"  anchor={anchor} open={open}
-        classes={{
-          paper: classes.drawerPaper,
-        }}
-      >
-        <div className={classes.drawerHeader}>
-        <List component="nav"
-          subheader={<ListSubheader color="primary">List Items</ListSubheader>}>
-        </List>
-          <IconButton onClick={this.handleToggle}>
-             <ChevronLeftIcon />
-          </IconButton>
-        </div>
-        <Divider />
-        <AppDrawer/>
-      </Drawer>
+
+// 点击事件
+  handleOnclick(){
+      var open=this.state.open;
+      this.setState({open:!open});
+  }
+  handleEnter=event=>{
+    if(this.state.mouse===true){
+    var mouse=this.state.mouse;
+    //var login=this.state.login;
+    //login=login==='login'? 'loginout':'login';
+    this.setState({mouse:!mouse  ,anchorEl: event.currentTarget});
+    }
+  }
+  handleMenu(){
+    var mouse=this.state.mouse;
+    this.setState({mouse:!mouse});
+  }
+  handleList(event,a){
+      window.open('../public/list1.html','_blank');
+    
+   this.setState({
+     list:a,
+   });
+ 
+  }
+
+  render(){
+    const classes=this.props.classes;
+   
+    let centre=(
+      <h1>centent</h1>
     );
-    let before=drawer;
+    if(this.state.list==1){
+      centre=(
+        <h1>list1</h1>
+    );
+    }else if(this.state.list==2){
+      centre=(
+        <h1>list2</h1>
+    );
+    }else if(this.state.list==3){
+      centre=(
+        <h1>list3</h1>
+    );
+    }
     return (
-      <div className={classes.root}>
+    <div className={classes.root} >                   
+       <AppBar  className={classes.appBar}  >
+          <Toolbar>
+            <IconButton 
+             onClick={this.handleOnclick} color="inherit">
+              <MenuIcon/>
+            </IconButton>
+            <Typography variant="title" color="inherit"  className={classes.flex}>Title</Typography>
+            {/* -----登录---- */}
+            <Button color="inherit">登 录</Button>
+          </Toolbar>
+       </AppBar>
+       {/* -------Drawer------ */}
+             <Drawer   variant="persistent"
+              open={this.state.open}
+              classes={{paper:classes.drawerPaper}}>
+               <IconButton  onClick={this.handleOnclick}>
+                 <MenuIcon/>
+               </IconButton>
+               {/* ----list----- */}
+               <List style={{marginTop:'5px'}}>
+            <ListItem button  onClick={(event)=>{this.handleList(event,1)}}>
+                <ListItemText primary="功能一"/>                
+            </ListItem>
+            <ListItem button onClick={(event)=>{this.handleList(event,2)}}>
 
-        <div className={classes.appFrame}>
-          <AppBar
-            className={classNames(classes.appBar, {
-              [classes.appBarShift]: open,
-              [classes[`appBarShift-${anchor}`]]: open,
-            })}
-          >
-            <Toolbar disableGutters={!open}>
-              <IconButton
-                color="inherit"
-                aria-label="open drawer"
-                onClick={this.handleToggle}
-                className={classNames(classes.menuButton, open && classes.hide)}
-              >
-                <MenuIcon />
-              </IconButton>
-              <Typography variant="title" color="inherit" noWrap className={classes.flex}>
-                Title
-              </Typography>
-              <Button color="inherit">Login</Button>
-            </Toolbar>
-          </AppBar>
-          {before}
-          <main
-            className={classNames(classes.content, classes[`content-${anchor}`], {
-              [classes.contentShift]: open,
-              [classes[`contentShift-${anchor}`]]: open,
-            })}
-          >
-            <div className={classes.drawerHeader} />
-            <Typography>{'You think water moves fast? You should see ice.'}</Typography>
-          </main>
-          
-        </div>
-      </div>
-    );
+                <ListItemText primary="功能二"/>
+            </ListItem>
+
+             <ListItem button  onClick={(event)=>{this.handleList(event,3)}}>
+                <ListItemText primary="功能三"/>
+            </ListItem>
+        </List>
+             </Drawer>
+           {/* -------main--------- */}
+             <main  className={classNames(classes.content, classes[`content-left`], 
+             {[classes[`contentShift-left`]]: this.state.open})}>
+             <div className={classes.drawerHeader}  />
+               {centre}
+             </main>
+    </div>
+    )
   }
-}
+} 
 
-export default withStyles(styles, { withTheme: true })(App);
+
+export default withStyles(styles)(App);
