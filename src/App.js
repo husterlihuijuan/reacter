@@ -10,7 +10,9 @@ import Typography from 'material-ui/Typography';
 import classNames from 'classnames';
 import List,{ListItem,ListItemText} from "material-ui/List";
 import Button from 'material-ui/Button';
-import AppList from './AppList'
+import AppList from './AppList';
+import LoginForm from './LoginForm';
+import Dialog, {DialogActions,DialogContent} from 'material-ui/Dialog';
 //样式
 const drawerWidth=240;
 const styles=theme=>({
@@ -56,6 +58,35 @@ const styles=theme=>({
     marginLeft: 0,
   },
   toolbar: theme.mixins.toolbar,
+  loginform:{
+   position:"absolute",
+    display:"block",
+    width:"500px",
+    height:"362px",
+    top:"50%",
+    left:"50%",
+    marginLeft:"-250px",
+   marginTop:"-181px",
+    padding:"0px",
+  },
+  loginheader:{
+    height:"100px",
+    backgroundColor:"#2196F3",
+    margin:0,marginBottom:"10px",
+    position:"relative",
+  },
+  signOutButton:{
+    position:"absolute",
+    top:0,
+    right:0,
+    color:"#fff",
+    fontSize:"20px",
+    margin:"0",
+    padding:"0",
+    minWidth:"40px",
+
+  },
+
 });
 
 class App extends Component{
@@ -66,6 +97,7 @@ class App extends Component{
       mouse:true,
       anchorEl: null,
      list:0,
+     login:false,
     }
 //点击事件函数绑定
     this.handleOnclick=this.handleOnclick.bind(this);
@@ -90,16 +122,18 @@ class App extends Component{
     var mouse=this.state.mouse;
     this.setState({mouse:!mouse});
   }
-  handleList(event,a){
-      
-    //window.open('../public/list1.html','_blank');
-    
+  handleList(event,a){ 
    this.setState({
      list:a,
    });
  
   }
-
+  handleClickLogin=()=>{
+    this.setState({login:true});
+  }
+  handleCloseLogin=()=>{
+    this.setState({login:false});
+  }
   render(){
     const classes=this.props.classes;
    
@@ -108,7 +142,7 @@ class App extends Component{
     );
     if(this.state.list==1){
       centre=(
-        <h1>list1</h1>
+       <AppList/>
     );
     }else if(this.state.list==2){
       centre=(
@@ -120,7 +154,7 @@ class App extends Component{
     );
     }
     return (
-    <div className={classes.root} >                   
+    <div className={classes.root} >                  
        <AppBar  className={classes.appBar}  >
           <Toolbar>
             <IconButton 
@@ -129,7 +163,7 @@ class App extends Component{
             </IconButton>
             <Typography variant="title" color="inherit"  className={classes.flex}>Title</Typography>
             {/* -----登录---- */}
-            <Button color="inherit">登 录</Button>
+            <Button color="inherit" onClick={this.handleClickLogin}>登 录</Button>
           </Toolbar>
        </AppBar>
        {/* -------Drawer------ */}
@@ -141,18 +175,18 @@ class App extends Component{
                </IconButton>
                {/* ----list----- */}
                <List style={{marginTop:'5px'}}>
-            <ListItem button  onClick={(event)=>{this.handleList(event,1)}}>
-                <ListItemText primary="功能一"/>                
-            </ListItem>
-            <ListItem button onClick={(event)=>{this.handleList(event,2)}}>
+                  <ListItem button  onClick={(event)=>{this.handleList(event,1)}}>
+                      <ListItemText primary="功能一"/>                
+                  </ListItem>
+                  <ListItem button onClick={(event)=>{this.handleList(event,2)}}>
 
-                <ListItemText primary="功能二"/>
-            </ListItem>
+                      <ListItemText primary="功能二"/>
+                  </ListItem>
 
-             <ListItem button  onClick={(event)=>{this.handleList(event,3)}}>
-                <ListItemText primary="功能三"/>
-            </ListItem>
-        </List>
+                  <ListItem button  onClick={(event)=>{this.handleList(event,3)}}>
+                      <ListItemText primary="功能三"/>
+                  </ListItem>
+              </List>
              </Drawer>
            {/* -------main--------- */}
              <main  className={classNames(classes.content, classes[`content-left`], 
@@ -160,6 +194,18 @@ class App extends Component{
              <div className={classes.drawerHeader}  />
                {centre}
              </main>
+          {/**********登录页面 ***************/}
+          <Dialog open={this.state.login} className={classes.loginform}>
+              <DialogActions className={classes.loginheader}>
+                <Button onClick={this.handleCloseLogin} color="primary" className={classes.signOutButton}>
+                  X
+                </Button>  
+              </DialogActions>
+              <DialogContent>
+                  <LoginForm className={classes.flex}/>
+              </DialogContent>
+          </Dialog>
+              
     </div>
     )
   }
